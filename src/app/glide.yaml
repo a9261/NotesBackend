@@ -1,0 +1,8 @@
+package: .
+excludeDirs:
+- app/myapp/hello
+import:
+- package: github.com/gin-gonic/gin
+  version: ^1.2.0
+- package: github.com/go-sql-driver/mysql
+  version: ^1.3.0
