@@ -12,6 +12,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/ping", notes.GetNoteInfo)
 	router.POST("/notes", notes.InsertNoteInfo)
+	router.GET("/notes", notes.GetNoteInfo)
 	router.Run()
 	fmt.Println(hello.BuildHello())
 }

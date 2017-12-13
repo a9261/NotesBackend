@@ -1,6 +1,6 @@
 // +build !go1.7 safe appengine
 
-// Copyright (c) 2012-2015 Ugorji Nwoke. All rights reserved.
+// Copyright (c) 2012-2018 Ugorji Nwoke. All rights reserved.
 // Use of this source code is governed by a MIT license found in the LICENSE file.
 
 package codec
@@ -8,6 +8,7 @@ package codec
 import (
 	"reflect"
 	"sync/atomic"
+	"time"
 )
 
 const safeMode = true
@@ -33,6 +34,8 @@ func bytesView(v string) []byte {
 }
 
 func definitelyNil(v interface{}) bool {
+	// this is a best-effort option.
+	// We just return false, so we don't unneessarily incur the cost of reflection this early.
 	return false
 	// rv := reflect.ValueOf(v)
 	// switch rv.Kind() {
@@ -67,11 +70,15 @@ func rv2rtid(rv reflect.Value) uintptr {
 	return reflect.ValueOf(rv.Type()).Pointer()
 }
 
+func i2rtid(i interface{}) uintptr {
+	return reflect.ValueOf(reflect.TypeOf(i)).Pointer()
+}
+
 // --------------------------
 // type ptrToRvMap struct{}
 
-// func (_ *ptrToRvMap) init() {}
-// func (_ *ptrToRvMap) get(i interface{}) reflect.Value {
+// func (*ptrToRvMap) init() {}
+// func (*ptrToRvMap) get(i interface{}) reflect.Value {
 // 	return reflect.ValueOf(i).Elem()
 // }
 
@@ -105,54 +112,128 @@ func (d *Decoder) kBool(f *codecFnInfo, rv reflect.Value) {
 	rv.SetBool(d.d.DecodeBool())
 }
 
+func (d *Decoder) kTime(f *codecFnInfo, rv reflect.Value) {
+	rv.Set(reflect.ValueOf(d.d.DecodeTime()))
+}
+
 func (d *Decoder) kFloat32(f *codecFnInfo, rv reflect.Value) {
-	rv.SetFloat(d.d.DecodeFloat(true))
+	fv := d.d.DecodeFloat64()
+	if chkOvf.Float32(fv) {
+		d.errorf("float32 overflow: %v", fv)
+	}
+	rv.SetFloat(fv)
 }
 
 func (d *Decoder) kFloat64(f *codecFnInfo, rv reflect.Value) {
-	rv.SetFloat(d.d.DecodeFloat(false))
+	rv.SetFloat(d.d.DecodeFloat64())
 }
 
 func (d *Decoder) kInt(f *codecFnInfo, rv reflect.Value) {
-	rv.SetInt(d.d.DecodeInt(intBitsize))
+	rv.SetInt(chkOvf.IntV(d.d.DecodeInt64(), intBitsize))
 }
 
 func (d *Decoder) kInt8(f *codecFnInfo, rv reflect.Value) {
-	rv.SetInt(d.d.DecodeInt(8))
+	rv.SetInt(chkOvf.IntV(d.d.DecodeInt64(), 8))
 }
 
 func (d *Decoder) kInt16(f *codecFnInfo, rv reflect.Value) {
-	rv.SetInt(d.d.DecodeInt(16))
+	rv.SetInt(chkOvf.IntV(d.d.DecodeInt64(), 16))
 }
 
 func (d *Decoder) kInt32(f *codecFnInfo, rv reflect.Value) {
-	rv.SetInt(d.d.DecodeInt(32))
+	rv.SetInt(chkOvf.IntV(d.d.DecodeInt64(), 32))
 }
 
 func (d *Decoder) kInt64(f *codecFnInfo, rv reflect.Value) {
-	rv.SetInt(d.d.DecodeInt(64))
+	rv.SetInt(d.d.DecodeInt64())
 }
 
 func (d *Decoder) kUint(f *codecFnInfo, rv reflect.Value) {
-	rv.SetUint(d.d.DecodeUint(uintBitsize))
+	rv.SetUint(chkOvf.UintV(d.d.DecodeUint64(), uintBitsize))
 }
 
 func (d *Decoder) kUintptr(f *codecFnInfo, rv reflect.Value) {
-	rv.SetUint(d.d.DecodeUint(uintBitsize))
+	rv.SetUint(chkOvf.UintV(d.d.DecodeUint64(), uintBitsize))
 }
 
 func (d *Decoder) kUint8(f *codecFnInfo, rv reflect.Value) {
-	rv.SetUint(d.d.DecodeUint(8))
+	rv.SetUint(chkOvf.UintV(d.d.DecodeUint64(), 8))
 }
 
 func (d *Decoder) kUint16(f *codecFnInfo, rv reflect.Value) {
-	rv.SetUint(d.d.DecodeUint(16))
+	rv.SetUint(chkOvf.UintV(d.d.DecodeUint64(), 16))
 }
 
 func (d *Decoder) kUint32(f *codecFnInfo, rv reflect.Value) {
-	rv.SetUint(d.d.DecodeUint(32))
+	rv.SetUint(chkOvf.UintV(d.d.DecodeUint64(), 32))
 }
 
 func (d *Decoder) kUint64(f *codecFnInfo, rv reflect.Value) {
-	rv.SetUint(d.d.DecodeUint(64))
+	rv.SetUint(d.d.DecodeUint64())
+}
+
+// ----------------
+
+func (e *Encoder) kBool(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeBool(rv.Bool())
+}
+
+func (e *Encoder) kTime(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeTime(rv2i(rv).(time.Time))
+}
+
+func (e *Encoder) kString(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeString(cUTF8, rv.String())
+}
+
+func (e *Encoder) kFloat64(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeFloat64(rv.Float())
+}
+
+func (e *Encoder) kFloat32(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeFloat32(float32(rv.Float()))
+}
+
+func (e *Encoder) kInt(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeInt(rv.Int())
+}
+
+func (e *Encoder) kInt8(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeInt(rv.Int())
+}
+
+func (e *Encoder) kInt16(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeInt(rv.Int())
+}
+
+func (e *Encoder) kInt32(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeInt(rv.Int())
+}
+
+func (e *Encoder) kInt64(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeInt(rv.Int())
+}
+
+func (e *Encoder) kUint(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeUint(rv.Uint())
+}
+
+func (e *Encoder) kUint8(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeUint(rv.Uint())
+}
+
+func (e *Encoder) kUint16(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeUint(rv.Uint())
+}
+
+func (e *Encoder) kUint32(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeUint(rv.Uint())
+}
+
+func (e *Encoder) kUint64(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeUint(rv.Uint())
+}
+
+func (e *Encoder) kUintptr(f *codecFnInfo, rv reflect.Value) {
+	e.e.EncodeUint(rv.Uint())
 }
