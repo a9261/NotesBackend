@@ -3,6 +3,10 @@ package noteRepo
 import (
 	"database/sql"
 	"fmt"
+	"math/rand"
+	"time"
+
+	"github.com/Masterminds/goutils"
 
 	mysql "github.com/go-sql-driver/mysql"
 )
@@ -40,6 +44,7 @@ func init() {
 // GetNotes will return mutiple Note data
 func (noteRep *NoteRepository) GetNotes() []NoteModel {
 	db, err := sql.Open("mysql", config.FormatDSN())
+	defer db.Close()
 	checkErr(err)
 	rows, err := db.Query(`SELECT 
 		NoteColor,NoteContent
@@ -69,11 +74,16 @@ func (noteRep *NoteRepository) GetNotes() []NoteModel {
 // InsertNoteMain is insert note main data
 func (noteRep *NoteRepository) InsertNoteMain(s NoteMainModel) {
 	db, err := sql.Open("mysql", config.FormatDSN())
+	defer db.Close()
 	checkErr(err)
-	stmt, err := db.Prepare(`INSERT NotesMain
+	stmt, err := db.Prepare(`INSERT NoteMain
 		SET NoteName=? , NoteKey=? `)
 	checkErr(err)
-	res, err := stmt.Exec(s.NoteName, s.NoteKey)
+	// Generator RandomKey
+	// https://github.com/Masterminds/goutils
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	key, _ := goutils.RandomSeed(10, 0, 0, true, true, nil, random)
+	res, err := stmt.Exec(s.NoteName, key)
 	checkErr(err)
 	fmt.Println("Insert Success")
 	fmt.Println(res.RowsAffected())
@@ -82,6 +92,7 @@ func (noteRep *NoteRepository) InsertNoteMain(s NoteMainModel) {
 // InsertNote is insert note data
 func (noteRep *NoteRepository) InsertNote(s NoteModel) {
 	db, err := sql.Open("mysql", config.FormatDSN())
+	defer db.Close()
 	checkErr(err)
 	stmt, err := db.Prepare(`INSERT NotesList 
 		SET NoteColor=? , NoteContent=? , 

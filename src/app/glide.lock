@@ -1,5 +1,5 @@
-hash: f69000e9d55ca99e49ac8e5a3f48a462fb08b53f96b494e7e2f2bc64928e2c58
-updated: 2017-12-13T22:46:43.886689138+08:00
+hash: 99c9dbc3eef1dcc5e8e7bc2caa9ad1bf8e4141228c9541fa55845701563c891f
+updated: 2017-12-16T00:22:53.478548325+08:00
 imports:
 - name: github.com/gin-contrib/sse
   version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
@@ -14,16 +14,20 @@ imports:
   version: 1e59b77b52bf8e4b449a57e6f79f21226d571845
   subpackages:
   - proto
+- name: github.com/Masterminds/goutils
+  version: 3391d3790d23d03408670993e957e8f408993c34
 - name: github.com/mattn/go-isatty
   version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
 - name: github.com/ugorji/go
-  version: bcec826260ae3be35231f9fa66f8e936702e0db0
+  version: 0e0d6e869525973a9b36093f6ddc9d91b9fc2d71
   subpackages:
   - codec
 - name: golang.org/x/sys
-  version: 53aa286056ef226755cd898109dbcdaba8ac0b81
+  version: d5840adf789d732bc8b00f37b26ca956a7cc8e79
   subpackages:
   - unix
 - name: gopkg.in/go-playground/validator.v8
