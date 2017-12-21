@@ -36,14 +36,14 @@ func init() {
 	config = mysql.Config{
 		User:   "root",
 		Passwd: "nfu123!@#",
-		Addr:   "192.168.2.13",
+		Addr:   "192.168.2.13:3306",
 		DBName: "Notes",
 	}
 }
 
 // GetNotes will return mutiple Note data
 func (noteRep *NoteRepository) GetNotes() []NoteModel {
-	db, err := sql.Open("mysql", config.FormatDSN())
+	db, err := sql.Open("mysql", "root:a5566%%^^@tcp(localhost:3333)/Notes")
 	defer db.Close()
 	checkErr(err)
 	rows, err := db.Query(`SELECT 
