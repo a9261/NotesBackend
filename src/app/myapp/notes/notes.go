@@ -13,6 +13,15 @@ type QueryModel struct {
 	Key string `form:"key" json"key"`
 }
 
+func PutNotes(c *gin.Context) {
+	var result noteRepo.NoteModel
+	if c.BindJSON(&result) == nil {
+		log.Println("OK")
+		log.Println(result)
+		note.PutNotes(result)
+	}
+}
+
 //GetNoteInfo is Get Note Info from Notes
 func GetNoteInfo(c *gin.Context) {
 	var model QueryModel

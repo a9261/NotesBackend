@@ -42,6 +42,26 @@ func init() {
 	}
 	conStr = "root:a5566%%^^@tcp(localhost:3333)/Notes"
 }
+func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
+	db, err := sql.Open("mysql", conStr)
+	defer db.Close()
+	checkErr(err)
+	tx, _ := db.Begin()
+	for index, elem := range items {
+		fmt.Println(index)
+		fmt.Println(elem)
+		tx.Exec(`
+			UPDATE NotesList
+			SET NoteColor=?,
+			NoteContent=?,
+			NotePositionY=?,
+			NotePositionX=?
+			WHERE FK_NoteKey=?
+			`)
+	}
+	tx.Commit()
+	return 0
+}
 
 // GetNotes will return mutiple Note data
 func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
