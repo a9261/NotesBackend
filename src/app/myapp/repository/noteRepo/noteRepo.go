@@ -31,25 +31,29 @@ type NoteRepository struct {
 }
 
 var config mysql.Config
+var conStr string
 
 func init() {
 	config = mysql.Config{
 		User:   "root",
-		Passwd: "nfu123!@#",
+		Passwd: "abc123456",
 		Addr:   "192.168.2.13:3306",
 		DBName: "Notes",
 	}
+	conStr = "root:a5566%%^^@tcp(localhost:3333)/Notes"
 }
 
 // GetNotes will return mutiple Note data
-func (noteRep *NoteRepository) GetNotes() []NoteModel {
-	db, err := sql.Open("mysql", "root:a5566%%^^@tcp(localhost:3333)/Notes")
+func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
+	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
 	checkErr(err)
 	rows, err := db.Query(`SELECT 
 		NoteColor,NoteContent
 		,NotePositionX,NotePositionY 
-		FROM NotesList`)
+		FROM NotesList
+		WHERE FK_NoteKey=?
+		`, key)
 	checkErr(err)
 	defer rows.Close()
 	var notes []NoteModel
@@ -72,8 +76,8 @@ func (noteRep *NoteRepository) GetNotes() []NoteModel {
 }
 
 // InsertNoteMain is insert note main data
-func (noteRep *NoteRepository) InsertNoteMain(s NoteMainModel) {
-	db, err := sql.Open("mysql", config.FormatDSN())
+func (noteRep *NoteRepository) InsertNoteMain(s NoteMainModel) (result string) {
+	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
 	checkErr(err)
 	stmt, err := db.Prepare(`INSERT NoteMain
@@ -87,6 +91,7 @@ func (noteRep *NoteRepository) InsertNoteMain(s NoteMainModel) {
 	checkErr(err)
 	fmt.Println("Insert Success")
 	fmt.Println(res.RowsAffected())
+	return key
 }
 
 // InsertNote is insert note data

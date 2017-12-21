@@ -9,9 +9,20 @@ import (
 
 var note = new(noteRepo.NoteRepository)
 
+type QueryModel struct {
+	Key string `form:"key" json"key"`
+}
+
 //GetNoteInfo is Get Note Info from Notes
 func GetNoteInfo(c *gin.Context) {
-	c.JSON(200, note.GetNotes())
+	var model QueryModel
+	var result []noteRepo.NoteModel
+	if c.Bind(&model) == nil {
+		result = note.GetNotes(model.Key)
+	} else {
+		result = note.GetNotes("axsfds")
+	}
+	c.JSON(200, result)
 }
 
 //Insert NoteMain Info
@@ -21,9 +32,9 @@ func InsertNoteMain(c *gin.Context) {
 	if c.BindJSON(&result) == nil {
 		log.Println("OK")
 		log.Println(result)
-		note.InsertNoteMain(result)
+		c.JSON(200, note.InsertNoteMain(result))
 	}
-	//c.String(200, "Success")
+	c.String(500, "Insert fail")
 }
 
 //InsertNoteInfo is Insert Note Info
