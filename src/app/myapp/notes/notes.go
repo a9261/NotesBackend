@@ -20,10 +20,11 @@ func ArchivedNote(c *gin.Context) {
 		log.Println("OK")
 		log.Panicln(noteItem)
 		note.ArchivedNote(noteItem)
+		c.JSON(200, "OK")
 	} else {
 		c.JSON(500, "archived fail")
 	}
-	c.JSON(200, "OK")
+
 }
 
 func PutNotes(c *gin.Context) {
@@ -72,7 +73,7 @@ func InsertNoteInfo(c *gin.Context) {
 		note.InsertNote(result)
 		c.String(200, "Success")
 	} else {
+		log.Println(result)
 		c.String(500, "InsertNoteInfo fail")
 	}
-	//
 }
