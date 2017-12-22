@@ -2,6 +2,7 @@ package notes
 
 import (
 	"app/myapp/repository/noteRepo"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,8 @@ func GetNoteInfo(c *gin.Context) {
 	var model QueryModel
 	var result []noteRepo.NoteModel
 	if c.Bind(&model) == nil {
+		fmt.Println("model.Key is ")
+		fmt.Println(model.Key)
 		result = note.GetNotes(model.Key)
 	} else {
 		result = note.GetNotes("axsfds")
