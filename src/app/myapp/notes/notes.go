@@ -14,7 +14,7 @@ type QueryModel struct {
 }
 
 func PutNotes(c *gin.Context) {
-	var result noteRepo.NoteModel
+	var result note.NoteModel
 	if c.BindJSON(&result) == nil {
 		log.Println("OK")
 		log.Println(result)
