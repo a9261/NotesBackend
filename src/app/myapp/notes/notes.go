@@ -65,7 +65,7 @@ func InsertNoteMain(c *gin.Context) {
 
 //InsertNoteInfo is Insert Note Info
 func InsertNoteInfo(c *gin.Context) {
-	log.Println("IN")
+	log.Println("IN InsertNoteInfo")
 	var result noteRepo.NoteModel
 	if c.BindJSON(&result) == nil {
 		log.Println("OK")
