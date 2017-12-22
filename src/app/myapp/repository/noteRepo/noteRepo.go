@@ -14,7 +14,7 @@ import (
 // Note data model struct
 type NoteModel struct {
 	ID            int     `json:"Id"`
-	NoteColor     int     `json:"NoteColor"`
+	NoteColor     string  `json:"NoteColor"`
 	NoteContent   string  `json:"Notecontent"`
 	NotePositionX float32 `json:"NotePositionX"`
 	NotePositionY float32 `json:"NotePositionY"`
@@ -109,7 +109,7 @@ func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
 	var (
 		ID            int
 		NoteKey       string
-		NoteColor     int
+		NoteColor     string
 		NoteContent   string
 		NotePositionX float32
 		NotePositionY float32
@@ -159,7 +159,7 @@ func (noteRep *NoteRepository) InsertNoteMain(s NoteMainModel) (result string) {
 
 // InsertNote is insert note data
 func (noteRep *NoteRepository) InsertNote(s NoteModel) {
-	db, err := sql.Open("mysql", config.FormatDSN())
+	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
 	checkErr(err)
 	stmt, err := db.Prepare(`INSERT NotesList 
