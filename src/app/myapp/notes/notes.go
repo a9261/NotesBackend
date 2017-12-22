@@ -70,6 +70,9 @@ func InsertNoteInfo(c *gin.Context) {
 		log.Println("OK")
 		log.Println(result)
 		note.InsertNote(result)
+		c.String(200, "Success")
+	} else {
+		c.String(500, "InsertNoteInfo fail")
 	}
-	//c.String(200, "Success")
+	//
 }
