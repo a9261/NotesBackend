@@ -13,11 +13,13 @@ import (
 
 // Note data model struct
 type NoteModel struct {
+	ID            int     `json:"Id"`
 	NoteColor     int     `json:"NoteColor"`
 	NoteContent   string  `json:"Notecontent"`
 	NotePositionX float32 `json:"NotePositionX"`
 	NotePositionY float32 `json:"NotePositionY"`
-	FK_NoteKey    string  `json:"FK_NoteKey"`
+	NoteKey       string  `json:"NoteKey"`
+	IsArchived    int     `json:"IsArchived"`
 }
 
 // NoteMain data model struct
@@ -42,6 +44,28 @@ func init() {
 	}
 	conStr = "root:a5566%%^^@tcp(localhost:3333)/Notes"
 }
+
+// ArchivedNote will archived  Note data
+func (noteRep *NoteRepository) ArchivedNote(item NoteModel) (isOk int) {
+	db, err := sql.Open("mysql", conStr)
+	defer db.Close()
+	checkErr(err)
+	tx, _ := db.Begin()
+	tx.Exec(`
+			UPDATE NotesList
+			SET NoteColor=?,
+			NoteContent=?,
+			NotePositionY=?,
+			NotePositionX=?
+			WHERE FK_NoteKey=? AND idNoteList=?
+			`, item.NoteColor, item.NoteContent,
+		item.NotePositionX, item.NotePositionY,
+		item.NoteKey, item.ID)
+	tx.Commit()
+	return 0
+}
+
+// PutNotes will update mutiple Note data
 func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
@@ -56,41 +80,55 @@ func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 			NoteContent=?,
 			NotePositionY=?,
 			NotePositionX=?
-			WHERE FK_NoteKey=?
-			`)
+			WHERE FK_NoteKey=? AND idNoteList=?
+			`, elem.NoteColor, elem.NoteContent,
+			elem.NotePositionX, elem.NotePositionY,
+			elem.NoteKey, elem.ID,
+		)
 	}
 	tx.Commit()
 	return 0
 }
 
-// GetNotes will return mutiple Note data
+// GetNotes will return mutiple Note data. data is not archived
 func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
 	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
 	checkErr(err)
 	rows, err := db.Query(`SELECT 
+		idNotesList,FK_NoteKey,
 		NoteColor,NoteContent
 		,NotePositionX,NotePositionY 
 		FROM NotesList
-		WHERE FK_NoteKey=?
+		WHERE FK_NoteKey=? AND IsArchived=0
 		`, key)
 	checkErr(err)
 	defer rows.Close()
 	var notes []NoteModel
 	var (
+		ID            int
+		NoteKey       string
 		NoteColor     int
 		NoteContent   string
 		NotePositionX float32
 		NotePositionY float32
+		IsArchived    int
 	)
 	for rows.Next() {
-		err := rows.Scan(&NoteColor, &NoteContent, &NotePositionX, &NotePositionX)
+		err := rows.Scan(
+			&ID, &NoteKey,
+			&NoteColor, &NoteContent,
+			&NotePositionX, &NotePositionX)
 		checkErr(err)
 		notes = append(notes, NoteModel{
+			ID:            ID,
+			NoteKey:       NoteKey,
 			NoteColor:     NoteColor,
 			NoteContent:   NoteContent,
 			NotePositionX: NotePositionX,
-			NotePositionY: NotePositionY})
+			NotePositionY: NotePositionY,
+			IsArchived:    IsArchived,
+		})
 	}
 	return notes
 }
@@ -121,9 +159,13 @@ func (noteRep *NoteRepository) InsertNote(s NoteModel) {
 	checkErr(err)
 	stmt, err := db.Prepare(`INSERT NotesList 
 		SET NoteColor=? , NoteContent=? , 
-		NotePositionX=? , NotePositionY=?`)
+		NotePositionX=? , NotePositionY=?,
+		FK_NoteKey=?
+		 `)
 	checkErr(err)
-	res, err := stmt.Exec(s.NoteColor, s.NoteContent, s.NotePositionX, s.NotePositionY)
+	res, err := stmt.Exec(s.NoteColor,
+		s.NoteContent, s.NotePositionX,
+		s.NotePositionY, s.NoteKey)
 	checkErr(err)
 	fmt.Println("Insert Success")
 	fmt.Println(res.RowsAffected())

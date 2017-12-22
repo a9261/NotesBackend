@@ -13,8 +13,20 @@ type QueryModel struct {
 	Key string `form:"key" json"key"`
 }
 
+func ArchivedNote(c *gin.Context) {
+	var noteItem noteRepo.NoteModel
+	if c.BindJSON(&note) == nil {
+		log.Println("OK")
+		log.Panicln(noteItem)
+		note.ArchivedNote(noteItem)
+	} else {
+		c.JSON(500, "archived fail")
+	}
+	c.JSON(200, "OK")
+}
+
 func PutNotes(c *gin.Context) {
-	var result note.NoteModel
+	var result []note.NoteModel = make([]note.NoteModel)
 	if c.BindJSON(&result) == nil {
 		log.Println("OK")
 		log.Println(result)
