@@ -119,7 +119,8 @@ func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
 		err := rows.Scan(
 			&ID, &NoteKey,
 			&NoteColor, &NoteContent,
-			&NotePositionX, &NotePositionX)
+			&NotePositionX, &NotePositionX,
+			&IsArchived)
 		checkErr(err)
 		notes = append(notes, NoteModel{
 			ID:            ID,
