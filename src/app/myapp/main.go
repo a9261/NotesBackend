@@ -15,6 +15,7 @@ func main() {
 	router.POST("/notes", notes.InsertNoteInfo)
 	router.GET("/notes", notes.GetNoteInfo)
 	router.PUT("/notes", notes.PutNotes)
-	router.Run()
+	router.POST("/notes/archived", notes.ArchivedNote)
+	router.Run(":5566")
 	fmt.Println(hello.BuildHello())
 }

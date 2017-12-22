@@ -26,7 +26,7 @@ func ArchivedNote(c *gin.Context) {
 }
 
 func PutNotes(c *gin.Context) {
-	var result []note.NoteModel = make([]note.NoteModel)
+	var result []noteRepo.NoteModel
 	if c.BindJSON(&result) == nil {
 		log.Println("OK")
 		log.Println(result)
