@@ -132,6 +132,7 @@ func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
 			IsArchived:    IsArchived,
 		})
 	}
+	fmt.Println(key)
 	fmt.Println(err)
 	fmt.Println(notes)
 	return notes
