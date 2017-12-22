@@ -98,7 +98,8 @@ func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
 	rows, err := db.Query(`SELECT 
 		idNotesList,FK_NoteKey,
 		NoteColor,NoteContent
-		,NotePositionX,NotePositionY 
+		,NotePositionX,NotePositionY
+		,IsArchived 
 		FROM NotesList
 		WHERE FK_NoteKey=? AND IsArchived=0
 		`, key)
