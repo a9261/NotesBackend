@@ -57,8 +57,9 @@ func InsertNoteMain(c *gin.Context) {
 		log.Println("OK")
 		log.Println(result)
 		c.JSON(200, note.InsertNoteMain(result))
+	} else {
+		c.String(500, "Insert fail")
 	}
-	c.String(500, "Insert fail")
 }
 
 //InsertNoteInfo is Insert Note Info
