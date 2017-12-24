@@ -56,6 +56,11 @@ func PutNotes(c *gin.Context) {
 	}
 }
 
+//Pong is response Ping
+func Pong(c *gin.Context) {
+	c.JSON(200, "Hi")
+}
+
 //GetNoteInfo is Get Note Info from Notes
 func GetNoteInfo(c *gin.Context) {
 	var model QueryModel

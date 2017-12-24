@@ -16,7 +16,7 @@ func main() {
 	// router.Use(cors.New(config))
 	//https://github.com/gin-contrib/cors
 	router.Use(cors.Default()) //Enable all origins
-	router.GET("/ping", notes.GetNoteInfo)
+	router.GET("/ping", notes.Pong)
 	router.POST("/main", notes.InsertNoteMain)
 	router.GET("/main", notes.GetNoteMain)
 
