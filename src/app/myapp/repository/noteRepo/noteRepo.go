@@ -78,7 +78,7 @@ func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 			NoteContent=?,
 			NotePositionY=?,
 			NotePositionX=?
-			WHERE FK_NoteKey=? AND idNoteList=?
+			WHERE FK_NoteKey=? AND idNotesList=?
 			`, elem.NoteColor, elem.NoteContent,
 			elem.NotePositionX, elem.NotePositionY,
 			elem.NoteKey, elem.ID,
