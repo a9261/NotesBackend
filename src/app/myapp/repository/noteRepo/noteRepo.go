@@ -58,7 +58,8 @@ func (noteRep *NoteRepository) ArchivedNote(key string, id int) (isOk int) {
 			SET IsArchived=1
 			WHERE FK_NoteKey=? AND idNoteList=?
 			`, key, id)
-	tx.Commit()
+	err = tx.Commit()
+	checkErr(err)
 	return 0
 }
 
@@ -83,7 +84,8 @@ func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 			elem.NoteKey, elem.ID,
 		)
 	}
-	tx.Commit()
+	err = tx.Commit()
+	checkErr(err)
 	return 0
 }
 
