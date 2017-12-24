@@ -102,7 +102,7 @@ func (noteRep *NoteRepository) ArchivedNote(key string, id int) (isOk int) {
 	_, err = db.Exec(`
 			UPDATE NotesList
 			SET IsArchived=1
-			WHERE FK_NoteKey=? AND idNoteList=?
+			WHERE FK_NoteKey=? AND idNotesList=?
 			`, key, id)
 	//err = tx.Commit()
 	checkErr(err)
