@@ -37,6 +37,9 @@ func PutNotes(c *gin.Context) {
 		log.Println("OK")
 		log.Println(result)
 		note.PutNotes(result)
+		c.JSON(200, "Update Ok")
+	} else {
+		c.JSON(500, "Update Fail")
 	}
 }
 

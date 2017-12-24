@@ -52,14 +52,14 @@ func (noteRep *NoteRepository) ArchivedNote(key string, id int) (isOk int) {
 	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
 	checkErr(err)
-	tx, _ := db.Begin()
-	tx.Exec(`
+	//tx, _ := db.Begin()
+	db.Exec(`
 			UPDATE NotesList
 			SET IsArchived=1
 			WHERE FK_NoteKey=? AND idNoteList=?
 			`, key, id)
-	err = tx.Commit()
-	checkErr(err)
+	//err = tx.Commit()
+	//checkErr(err)
 	return 0
 }
 
@@ -68,11 +68,11 @@ func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
 	checkErr(err)
-	tx, _ := db.Begin()
+	//tx, _ := db.Begin()
 	for index, elem := range items {
 		fmt.Println(index)
 		fmt.Println(elem)
-		tx.Exec(`
+		db.Exec(`
 			UPDATE NotesList
 			SET NoteColor=?,
 			NoteContent=?,
@@ -84,8 +84,8 @@ func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 			elem.NoteKey, elem.ID,
 		)
 	}
-	err = tx.Commit()
-	checkErr(err)
+	//err = tx.Commit()
+	//checkErr(err)
 	return 0
 }
 
