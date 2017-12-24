@@ -137,6 +137,28 @@ func (noteRep *NoteRepository) GetNotes(key string) []NoteModel {
 	fmt.Println(notes)
 	return notes
 }
+func (noteRep *NoteRepository) GetNoteMain(key string) (result NoteMainModel) {
+	var main NoteMainModel
+	db, err := sql.Open("mysql", conStr)
+	defer db.Close()
+	checkErr(err)
+	rows, err := db.Query(`SELECT 
+		NoteName
+		FROM NoteMain
+		WHERE NoteKey=?
+		`, key)
+	checkErr(err)
+	defer rows.Close()
+	var noteName string
+	for rows.Next() {
+		err := rows.Scan(
+			&noteName)
+		checkErr(err)
+		main.NoteKey = key
+		main.NoteName = noteName
+	}
+	return main
+}
 
 // InsertNoteMain is insert note main data
 func (noteRep *NoteRepository) InsertNoteMain(s NoteMainModel) (result string) {

@@ -50,6 +50,20 @@ func GetNoteInfo(c *gin.Context) {
 	c.JSON(200, result)
 }
 
+//GetNoteMain is Get NoteMain Info
+func GetNoteMain(c *gin.Context) {
+	log.Println("IN")
+	var model QueryModel
+	var result noteRepo.NoteMainModel
+	if c.Bind(&model) == nil {
+		log.Println("OK")
+		log.Println(result)
+		c.JSON(200, note.GetNoteMain(model.Key))
+	} else {
+		c.String(500, "GetNoteMain fail")
+	}
+}
+
 //Insert NoteMain Info
 func InsertNoteMain(c *gin.Context) {
 	log.Println("IN")

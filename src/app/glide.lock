@@ -1,6 +1,8 @@
-hash: 99c9dbc3eef1dcc5e8e7bc2caa9ad1bf8e4141228c9541fa55845701563c891f
-updated: 2017-12-16T00:22:53.478548325+08:00
+hash: 48b6d177922c4c2419c18616d211a97720bb4caf9df0d59b1e72870ddedb4023
+updated: 2017-12-24T16:02:45.781691966+08:00
 imports:
+- name: github.com/gin-contrib/cors
+  version: cf4846e6a636a76237a28d9286f163c132e841bc
 - name: github.com/gin-contrib/sse
   version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
 - name: github.com/gin-gonic/gin
@@ -23,11 +25,11 @@ imports:
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
 - name: github.com/ugorji/go
-  version: 0e0d6e869525973a9b36093f6ddc9d91b9fc2d71
+  version: 4ad9ed71b16134163c6502b2ba1ba93de1a0f171
   subpackages:
   - codec
 - name: golang.org/x/sys
-  version: d5840adf789d732bc8b00f37b26ca956a7cc8e79
+  version: 83801418e1b59fb1880e363299581ee543af32ca
   subpackages:
   - unix
 - name: gopkg.in/go-playground/validator.v8
