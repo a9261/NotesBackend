@@ -18,6 +18,19 @@ type ArchivedModel struct {
 	ID  int    `form:"Id" json"Id"`
 }
 
+func GetArchivedNote(c *gin.Context) {
+	var model QueryModel
+	if c.Bind(&model) == nil {
+		result, err := note.GetArchivedNote(model.Key)
+		if err == nil {
+			c.JSON(200, result)
+		} else {
+			c.JSON(500, "GetArchivedNote is wrong")
+		}
+	} else {
+		c.JSON(500, "Binding querystring is wrong")
+	}
+}
 func ArchivedNote(c *gin.Context) {
 	var noteItem ArchivedModel
 	if c.BindJSON(&noteItem) == nil {

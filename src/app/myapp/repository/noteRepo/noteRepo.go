@@ -46,6 +46,52 @@ func init() {
 	//conStr = "root:nfu123!@#@tcp(localhost:3306)/Notes"
 
 }
+func (noteRep *NoteRepository) GetArchivedNote(key string) (result []NoteModel, er error) {
+	db, err := sql.Open("mysql", conStr)
+	defer db.Close()
+	checkErr(err)
+	rows, err := db.Query(`SELECT 
+		idNotesList,FK_NoteKey,
+		NoteColor,NoteContent
+		,NotePositionX,NotePositionY
+		,IsArchived 
+		FROM NotesList
+		WHERE FK_NoteKey=? AND IsArchived=1
+		`, key)
+	checkErr(err)
+	defer rows.Close()
+	var notes []NoteModel
+	var (
+		ID            int
+		NoteKey       string
+		NoteColor     string
+		NoteContent   string
+		NotePositionX float32
+		NotePositionY float32
+		IsArchived    int
+	)
+	for rows.Next() {
+		err := rows.Scan(
+			&ID, &NoteKey,
+			&NoteColor, &NoteContent,
+			&NotePositionX, &NotePositionY,
+			&IsArchived)
+		checkErr(err)
+		notes = append(notes, NoteModel{
+			ID:            ID,
+			NoteKey:       NoteKey,
+			NoteColor:     NoteColor,
+			NoteContent:   NoteContent,
+			NotePositionX: NotePositionX,
+			NotePositionY: NotePositionY,
+			IsArchived:    IsArchived,
+		})
+	}
+	fmt.Println(key)
+	fmt.Println(err)
+	fmt.Println(notes)
+	return notes, err
+}
 
 // ArchivedNote will archived  Note data
 func (noteRep *NoteRepository) ArchivedNote(key string, id int) (isOk int) {

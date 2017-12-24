@@ -25,6 +25,7 @@ func main() {
 	router.PUT("/notes", notes.PutNotes)
 
 	router.POST("/notes/archived", notes.ArchivedNote)
+	router.GET("/notes/archived", notes.GetArchivedNote)
 
 	router.Run(":5566")
 	fmt.Println(hello.BuildHello())
