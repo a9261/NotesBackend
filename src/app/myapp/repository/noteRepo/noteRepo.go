@@ -42,7 +42,9 @@ func init() {
 		Addr:   "192.168.2.13:3306",
 		DBName: "Notes",
 	}
-	conStr = "root:a5566%%^^@tcp(localhost:3333)/Notes"
+	//conStr = "root:a5566%%^^@tcp(localhost:3333)/Notes"
+	conStr = "root:nfu123!@#@tcp(localhost:3306)/Notes"
+
 }
 
 // ArchivedNote will archived  Note data

@@ -11,6 +11,11 @@ import (
 
 func main() {
 	router := gin.Default()
+	// config := cors.DefaultConfig()
+	// config.AllowAllOrigins = true
+	// router.Use(cors.New(config))
+	//https://github.com/gin-contrib/cors
+	router.Use(cors.Default()) //Enable all origins
 	router.GET("/ping", notes.GetNoteInfo)
 	router.POST("/main", notes.InsertNoteMain)
 	router.GET("/main", notes.GetNoteMain)
@@ -21,8 +26,6 @@ func main() {
 
 	router.POST("/notes/archived", notes.ArchivedNote)
 
-	//https://github.com/gin-contrib/cors
-	router.Use(cors.Default()) //Enable all origins
 	router.Run(":5566")
 	fmt.Println(hello.BuildHello())
 }
