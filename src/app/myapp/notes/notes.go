@@ -35,7 +35,7 @@ func ArchivedNote(c *gin.Context) {
 	var noteItem ArchivedModel
 	if c.BindJSON(&noteItem) == nil {
 		log.Println("OK")
-		log.Panicln(noteItem)
+		log.Println(noteItem)
 		note.ArchivedNote(noteItem.Key, noteItem.ID)
 		c.JSON(200, "OK")
 	} else {
