@@ -14,8 +14,8 @@ type QueryModel struct {
 	Key string `form:"key" json"key"`
 }
 type ArchivedModel struct {
-	Key string `form:"NoteKey" json"NoteKey"`
-	ID  int    `form:"Id" json"Id"`
+	Key string `form:"key" json"key"`
+	ID  int    `form:"id" json"id"`
 }
 
 func GetArchivedNote(c *gin.Context) {
