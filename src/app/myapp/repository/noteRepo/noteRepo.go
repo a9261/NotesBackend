@@ -72,7 +72,7 @@ func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 	for index, elem := range items {
 		fmt.Println(index)
 		fmt.Println(elem)
-		db.Exec(`
+		result, errr := db.Exec(`
 			UPDATE NotesList
 			SET NoteColor=?,
 			NoteContent=?,
@@ -83,6 +83,8 @@ func (noteRep *NoteRepository) PutNotes(items []NoteModel) (isOk int) {
 			elem.NotePositionX, elem.NotePositionY,
 			elem.NoteKey, elem.ID,
 		)
+		fmt.Println(result)
+		checkErr(errr)
 	}
 	//err = tx.Commit()
 	//checkErr(err)
