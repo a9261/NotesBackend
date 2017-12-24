@@ -48,21 +48,16 @@ func init() {
 }
 
 // ArchivedNote will archived  Note data
-func (noteRep *NoteRepository) ArchivedNote(item NoteModel) (isOk int) {
+func (noteRep *NoteRepository) ArchivedNote(key string, id int) (isOk int) {
 	db, err := sql.Open("mysql", conStr)
 	defer db.Close()
 	checkErr(err)
 	tx, _ := db.Begin()
 	tx.Exec(`
 			UPDATE NotesList
-			SET NoteColor=?,
-			NoteContent=?,
-			NotePositionY=?,
-			NotePositionX=?
+			SET IsArchived=1
 			WHERE FK_NoteKey=? AND idNoteList=?
-			`, item.NoteColor, item.NoteContent,
-		item.NotePositionX, item.NotePositionY,
-		item.NoteKey, item.ID)
+			`, key, id)
 	tx.Commit()
 	return 0
 }

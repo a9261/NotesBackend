@@ -13,13 +13,17 @@ var note = new(noteRepo.NoteRepository)
 type QueryModel struct {
 	Key string `form:"key" json"key"`
 }
+type ArchivedModel struct {
+	Key string `form:"NoteKey" json"NoteKey"`
+	ID  int    `form:"Id" json"Id"`
+}
 
 func ArchivedNote(c *gin.Context) {
-	var noteItem noteRepo.NoteModel
-	if c.BindJSON(&note) == nil {
+	var noteItem ArchivedModel
+	if c.BindJSON(&noteItem) == nil {
 		log.Println("OK")
 		log.Panicln(noteItem)
-		note.ArchivedNote(noteItem)
+		note.ArchivedNote(noteItem.Key, noteItem.ID)
 		c.JSON(200, "OK")
 	} else {
 		c.JSON(500, "archived fail")
